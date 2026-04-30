@@ -905,6 +905,125 @@
     .form__row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
 
     /* ═══════════════════════════════
+       BOOKING WIZARD
+    ═══════════════════════════════ */
+    .wizard__progress {
+      display: flex;
+      gap: .5rem;
+      margin-bottom: 1.8rem;
+    }
+    .wizard__progress span {
+      flex: 1;
+      height: 3px;
+      background: rgba(44,85,72,.15);
+      border-radius: 2px;
+      transition: background var(--tr);
+    }
+    .wizard__progress span.done { background: var(--gold); }
+    .wizard__progress span.active { background: var(--green); }
+    .wizard__step { display: none; }
+    .wizard__step.active { display: block; animation: fadeUp .35s ease both; }
+    @keyframes fadeUp { from { opacity:0; transform:translateY(8px) } to { opacity:1; transform:none } }
+    .wizard__steplabel {
+      font-family: var(--sans);
+      font-size: .7rem;
+      font-weight: 600;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--gold-dark);
+      margin-bottom: .4rem;
+    }
+    .wizard__steptitle {
+      font-family: var(--serif);
+      font-size: 1.5rem;
+      color: var(--green-dark);
+      margin-bottom: 1.2rem;
+      font-weight: 700;
+    }
+    .chip-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: .55rem;
+    }
+    .chip-opt {
+      display: flex;
+      align-items: center;
+      gap: .55rem;
+      padding: .85rem 1rem;
+      border: 1.5px solid rgba(44,85,72,.2);
+      border-radius: var(--r2);
+      background: var(--white);
+      cursor: pointer;
+      transition: all var(--tr);
+      font-family: var(--sans);
+      font-size: .85rem;
+      font-weight: 500;
+      color: var(--text);
+      user-select: none;
+    }
+    .chip-opt input { display: none; }
+    .chip-opt:hover { border-color: var(--green); }
+    .chip-opt.selected {
+      background: var(--green);
+      color: var(--white);
+      border-color: var(--green);
+    }
+    .chip-opt.selected i { color: var(--gold-light); }
+    .chip-opt i { color: var(--gold); }
+    .wizard__nav {
+      display: flex;
+      gap: .8rem;
+      justify-content: space-between;
+      margin-top: 1.8rem;
+    }
+    .btn--ghost {
+      background: transparent;
+      color: var(--green);
+      border: 1.5px solid rgba(44,85,72,.25);
+    }
+    .btn--ghost:hover { background: var(--green-pale); }
+    .field-error {
+      color: #b54a3a;
+      font-size: .85rem;
+      margin-top: .5rem;
+      display: none;
+    }
+    .field-error.show { display: block; }
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(120%);
+      background: var(--green-dark);
+      color: var(--white);
+      padding: 1rem 1.5rem;
+      border-radius: var(--r4);
+      box-shadow: var(--shadow-md);
+      font-family: var(--sans);
+      font-size: .9rem;
+      z-index: 10000;
+      transition: transform .4s cubic-bezier(.25,.8,.25,1);
+      max-width: 90vw;
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+    .toast.error { background: #b54a3a; }
+    .toast i { color: var(--gold-light); font-size: 1.1rem; }
+    .gal-item.empty-placeholder {
+      background: var(--green-pale);
+      display: grid;
+      place-items: center;
+      min-height: 240px;
+      color: var(--green-mid);
+      font-family: var(--sans);
+      font-size: .85rem;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    /* ═══════════════════════════════
        FOOTER
     ═══════════════════════════════ */
     footer { background: var(--green-dark); padding: 5rem 0 2rem; }
@@ -1379,31 +1498,8 @@
       <h2 class="heading reveal"><span data-i18n="gallery.heading1">A Glimpse of Our</span> <em data-i18n="gallery.heading2">Creations</em></h2>
       <div class="divider reveal"><i class="fa-solid fa-seedling"></i></div>
     </div>
-    <div class="gallery__grid">
-      <div class="gal-item reveal" data-d="1">
-        <img class="gal-img" src="https://images.unsplash.com/photo-1519741497674-611481863552?w=800&q=80" alt="Wedding" loading="lazy" />
-        <div class="gal-item__overlay"><i class="fa-solid fa-expand"></i><span data-i18n="gal.wedding">Wedding Décor</span></div>
-      </div>
-      <div class="gal-item reveal" data-d="2">
-        <img class="gal-img" src="https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=600&q=80" alt="Balloons" loading="lazy" />
-        <div class="gal-item__overlay"><i class="fa-solid fa-expand"></i><span data-i18n="gal.balloons">Balloon Décor</span></div>
-      </div>
-      <div class="gal-item reveal" data-d="3">
-        <img class="gal-img" src="https://images.unsplash.com/photo-1464349153735-7db50ed83c84?w=600&q=80" alt="Arch" loading="lazy" />
-        <div class="gal-item__overlay"><i class="fa-solid fa-expand"></i><span data-i18n="gal.arch">Balloon Arch</span></div>
-      </div>
-      <div class="gal-item reveal" data-d="1">
-        <img class="gal-img" src="https://images.unsplash.com/photo-1602173574767-37ac01994b2a?w=600&q=80" alt="Gifts" loading="lazy" />
-        <div class="gal-item__overlay"><i class="fa-solid fa-expand"></i><span data-i18n="gal.gifts">Corporate Gifts</span></div>
-      </div>
-      <div class="gal-item reveal" data-d="2">
-        <img class="gal-img" src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=800&q=80" alt="Party" loading="lazy" />
-        <div class="gal-item__overlay"><i class="fa-solid fa-expand"></i><span data-i18n="gal.party">Party Setup</span></div>
-      </div>
-      <div class="gal-item reveal" data-d="3">
-        <img class="gal-img" src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80" alt="Hampers" loading="lazy" />
-        <div class="gal-item__overlay"><i class="fa-solid fa-expand"></i><span data-i18n="gal.hampers">Gift Hampers</span></div>
-      </div>
+    <div class="gallery__grid" id="galleryGrid">
+      <!-- populated by JS from /api/gallery; falls back to demo images if empty -->
     </div>
   </div>
 </section>
@@ -1583,50 +1679,159 @@
         </a>
       </div>
       <div class="contact__form reveal-r">
-        <form id="contactForm" onsubmit="handleSubmit(event)">
-          <div class="form__row">
+        <form id="bookingForm" autocomplete="on">
+          <div class="wizard__progress">
+            <span class="active"></span><span></span><span></span>
+          </div>
+
+          <!-- Step 1: Event type + Services -->
+          <div class="wizard__step active" data-step="1">
+            <div class="wizard__steplabel" data-i18n="wiz.step1.label">Hapi 1 nga 3</div>
+            <div class="wizard__steptitle" data-i18n="wiz.step1.title">Tipi i Eventit & Shërbimet</div>
+
             <div class="form__group">
-              <label class="form__label" data-i18n="form.fname">First Name</label>
-              <input type="text" class="form__input" required />
+              <label class="form__label" data-i18n="wiz.eventtype">Tipi i Eventit</label>
+              <div class="chip-grid" id="eventTypeGrid">
+                <label class="chip-opt"><input type="radio" name="event_type" value="wedding" required><i class="fa-solid fa-ring"></i><span data-i18n="ev.wedding">Dasmë</span></label>
+                <label class="chip-opt"><input type="radio" name="event_type" value="engagement"><i class="fa-solid fa-heart"></i><span data-i18n="ev.engagement">Fejesë</span></label>
+                <label class="chip-opt"><input type="radio" name="event_type" value="birthday"><i class="fa-solid fa-cake-candles"></i><span data-i18n="ev.birthday">Ditëlindje</span></label>
+                <label class="chip-opt"><input type="radio" name="event_type" value="anniversary"><i class="fa-solid fa-champagne-glasses"></i><span data-i18n="ev.anniversary">Përvjetor</span></label>
+                <label class="chip-opt"><input type="radio" name="event_type" value="corporate"><i class="fa-solid fa-briefcase"></i><span data-i18n="ev.corporate">Korporativ</span></label>
+                <label class="chip-opt"><input type="radio" name="event_type" value="other"><i class="fa-solid fa-star"></i><span data-i18n="ev.other">Tjetër</span></label>
+              </div>
+              <div class="field-error" id="err-event-type" data-i18n="wiz.err.event">Ju lutem zgjedhni tipin e eventit.</div>
+            </div>
+
+            <div class="form__group">
+              <label class="form__label" data-i18n="wiz.services">Shërbimet që dëshironi (mund të zgjidhni më shumë se një)</label>
+              <div class="chip-grid" id="servicesGrid">
+                <label class="chip-opt"><input type="checkbox" name="services" value="balloon-arch"><i class="fa-solid fa-archway"></i><span data-i18n="sv.arch">Baloon Arch</span></label>
+                <label class="chip-opt"><input type="checkbox" name="services" value="helium-balloons"><i class="fa-solid fa-circle"></i><span data-i18n="sv.helium">Balona me Helium</span></label>
+                <label class="chip-opt"><input type="checkbox" name="services" value="table-decor"><i class="fa-solid fa-utensils"></i><span data-i18n="sv.table">Dekor Tavoline</span></label>
+                <label class="chip-opt"><input type="checkbox" name="services" value="plates-glasses"><i class="fa-solid fa-wine-glass"></i><span data-i18n="sv.plates">Pjata-Gota Set</span></label>
+                <label class="chip-opt"><input type="checkbox" name="services" value="centerpieces"><i class="fa-solid fa-fan"></i><span data-i18n="sv.center">Centerpieces</span></label>
+                <label class="chip-opt"><input type="checkbox" name="services" value="flower-arrangements"><i class="fa-solid fa-seedling"></i><span data-i18n="sv.flowers">Aranzhime me Lule</span></label>
+                <label class="chip-opt"><input type="checkbox" name="services" value="backdrop"><i class="fa-solid fa-image"></i><span data-i18n="sv.backdrop">Backdrop / Sfond</span></label>
+                <label class="chip-opt"><input type="checkbox" name="services" value="candy-bar"><i class="fa-solid fa-candy-cane"></i><span data-i18n="sv.candy">Candy Bar</span></label>
+                <label class="chip-opt"><input type="checkbox" name="services" value="cake-stand"><i class="fa-solid fa-birthday-cake"></i><span data-i18n="sv.cake">Mbajtëse Torte</span></label>
+                <label class="chip-opt"><input type="checkbox" name="services" value="gifts"><i class="fa-solid fa-gift"></i><span data-i18n="sv.gifts">Bombonjeret / Dhuratat</span></label>
+                <label class="chip-opt"><input type="checkbox" name="services" value="custom"><i class="fa-solid fa-wand-magic-sparkles"></i><span data-i18n="sv.custom">Dizajn me Porosi</span></label>
+              </div>
+              <div class="field-error" id="err-services" data-i18n="wiz.err.services">Ju lutem zgjedhni të paktën një shërbim.</div>
+            </div>
+
+            <div class="wizard__nav">
+              <span></span>
+              <button type="button" class="btn btn--primary" data-go="2"><span data-i18n="wiz.next">Vazhdo</span> <i class="fa-solid fa-arrow-right"></i></button>
+            </div>
+          </div>
+
+          <!-- Step 2: Date, time, location, venue -->
+          <div class="wizard__step" data-step="2">
+            <div class="wizard__steplabel" data-i18n="wiz.step2.label">Hapi 2 nga 3</div>
+            <div class="wizard__steptitle" data-i18n="wiz.step2.title">Data, Ora & Lokacioni</div>
+
+            <div class="form__row">
+              <div class="form__group">
+                <label class="form__label" data-i18n="wiz.date">Data</label>
+                <input type="date" class="form__input" name="event_date" />
+              </div>
+              <div class="form__group">
+                <label class="form__label" data-i18n="wiz.guests">Numri i të ftuarve</label>
+                <input type="number" class="form__input" name="guest_count" min="1" placeholder="psh. 80" />
+              </div>
+            </div>
+
+            <div class="form__row">
+              <div class="form__group">
+                <label class="form__label" data-i18n="wiz.time.start">Ora prej</label>
+                <input type="time" class="form__input" name="event_time_start" />
+              </div>
+              <div class="form__group">
+                <label class="form__label" data-i18n="wiz.time.end">Ora deri</label>
+                <input type="time" class="form__input" name="event_time_end" />
+              </div>
+            </div>
+
+            <div class="form__group">
+              <label class="form__label" data-i18n="wiz.address">Adresa e lokacionit *</label>
+              <input type="text" class="form__input" name="location_address" placeholder="Rruga, numri" />
+            </div>
+
+            <div class="form__row">
+              <div class="form__group">
+                <label class="form__label" data-i18n="wiz.city">Qyteti</label>
+                <input type="text" class="form__input" name="location_city" placeholder="psh. Prishtinë" />
+              </div>
+              <div class="form__group">
+                <label class="form__label" data-i18n="wiz.venue">Tipi i ambientit</label>
+                <select class="form__select" name="venue_type">
+                  <option value="" data-i18n="wiz.venue.choose">— Zgjedh —</option>
+                  <option value="house" data-i18n="wiz.venue.house">Shtëpi</option>
+                  <option value="apartment" data-i18n="wiz.venue.apt">Banesë</option>
+                  <option value="hall" data-i18n="wiz.venue.hall">Sallë eventesh</option>
+                  <option value="restaurant" data-i18n="wiz.venue.rest">Restorant</option>
+                  <option value="garden" data-i18n="wiz.venue.garden">Kopsht / Oborr</option>
+                  <option value="other" data-i18n="wiz.venue.other">Tjetër</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form__group">
+              <label class="form__label" data-i18n="wiz.io">Mbrenda apo Jashtë</label>
+              <div class="chip-grid" style="grid-template-columns:repeat(2,1fr)">
+                <label class="chip-opt"><input type="radio" name="indoor_outdoor" value="indoor"><i class="fa-solid fa-house"></i><span data-i18n="wiz.io.in">Mbrenda</span></label>
+                <label class="chip-opt"><input type="radio" name="indoor_outdoor" value="outdoor"><i class="fa-solid fa-tree"></i><span data-i18n="wiz.io.out">Jashtë</span></label>
+              </div>
+            </div>
+
+            <div class="wizard__nav">
+              <button type="button" class="btn btn--ghost" data-go="1"><i class="fa-solid fa-arrow-left"></i> <span data-i18n="wiz.back">Mbrapa</span></button>
+              <button type="button" class="btn btn--primary" data-go="3"><span data-i18n="wiz.next">Vazhdo</span> <i class="fa-solid fa-arrow-right"></i></button>
+            </div>
+          </div>
+
+          <!-- Step 3: Customer info -->
+          <div class="wizard__step" data-step="3">
+            <div class="wizard__steplabel" data-i18n="wiz.step3.label">Hapi 3 nga 3</div>
+            <div class="wizard__steptitle" data-i18n="wiz.step3.title">Të Dhënat e Kontaktit</div>
+
+            <div class="form__group">
+              <label class="form__label" data-i18n="wiz.name">Emri & Mbiemri *</label>
+              <input type="text" class="form__input" name="customer_name" required autocomplete="name" />
+            </div>
+            <div class="form__row">
+              <div class="form__group">
+                <label class="form__label" data-i18n="wiz.phone">Numri i telefonit *</label>
+                <input type="tel" class="form__input" name="customer_phone" required autocomplete="tel" placeholder="+383 4X XXX XXX" />
+              </div>
+              <div class="form__group">
+                <label class="form__label" data-i18n="wiz.email">Email (opsional)</label>
+                <input type="email" class="form__input" name="customer_email" autocomplete="email" />
+              </div>
             </div>
             <div class="form__group">
-              <label class="form__label" data-i18n="form.lname">Last Name</label>
-              <input type="text" class="form__input" required />
+              <label class="form__label" data-i18n="wiz.budget">Buxheti i parashikuar</label>
+              <select class="form__select" name="budget_range">
+                <option value="" data-i18n="wiz.budget.choose">— Zgjedh —</option>
+                <option value="under-200">deri 200 €</option>
+                <option value="200-500">200 – 500 €</option>
+                <option value="500-1000">500 – 1.000 €</option>
+                <option value="1000-2500">1.000 – 2.500 €</option>
+                <option value="2500-plus">mbi 2.500 €</option>
+                <option value="flexible" data-i18n="wiz.budget.flex">Fleksibël / Diskutohet</option>
+              </select>
+            </div>
+            <div class="form__group">
+              <label class="form__label" data-i18n="wiz.notes">Shënime shtesë</label>
+              <textarea class="form__textarea" name="notes" placeholder="Tregona vizionin tënd, ngjyrat e preferuara, tema, etj." data-i18n-ph="wiz.notes.ph"></textarea>
+            </div>
+
+            <div class="wizard__nav">
+              <button type="button" class="btn btn--ghost" data-go="2"><i class="fa-solid fa-arrow-left"></i> <span data-i18n="wiz.back">Mbrapa</span></button>
+              <button type="submit" class="btn btn--primary"><i class="fa-solid fa-paper-plane"></i> <span data-i18n="wiz.submit">Dërgo Kërkesën</span></button>
             </div>
           </div>
-          <div class="form__group">
-            <label class="form__label" data-i18n="form.email">Email Address</label>
-            <input type="email" class="form__input" required />
-          </div>
-          <div class="form__group">
-            <label class="form__label" data-i18n="form.phone">Phone Number</label>
-            <input type="tel" class="form__input" />
-          </div>
-          <div class="form__group">
-            <label class="form__label" data-i18n="form.type">Event Type</label>
-            <select class="form__select">
-              <option value="" disabled selected data-i18n="form.type.select">Select your event type</option>
-              <option data-i18n="form.type.wedding">Wedding Decoration</option>
-              <option data-i18n="form.type.birthday">Birthday Decoration</option>
-              <option data-i18n="form.type.arch">Balloon Arch</option>
-              <option data-i18n="form.type.helium">Helium Balloons</option>
-              <option data-i18n="form.type.corporate">Corporate Gift</option>
-              <option data-i18n="form.type.custom">Custom Present</option>
-              <option data-i18n="form.type.other">Other</option>
-            </select>
-          </div>
-          <div class="form__group">
-            <label class="form__label" data-i18n="form.date">Event Date</label>
-            <input type="date" class="form__input" />
-          </div>
-          <div class="form__group">
-            <label class="form__label" data-i18n="form.message">Tell Us About Your Vision</label>
-            <textarea class="form__textarea"></textarea>
-          </div>
-          <button type="submit" class="btn btn--primary" style="width:100%;justify-content:center">
-            <i class="fa-solid fa-paper-plane"></i>
-            <span data-i18n="form.submit">Send My Enquiry</span>
-          </button>
         </form>
       </div>
     </div>
@@ -2015,21 +2220,132 @@ document.querySelectorAll('[data-count]').forEach(el => {
   obs.observe(el);
 });
 
-/* ─── Form ─── */
-function handleSubmit(e) {
-  e.preventDefault();
-  const btn = e.target.querySelector('button[type=submit]');
-  const span = btn.querySelector('span');
-  span.textContent = i18n[currentLang]['form.sent'] || 'Message Sent!';
-  btn.style.background = 'var(--green-mid)';
-  btn.disabled = true;
-  setTimeout(() => {
-    span.textContent = i18n[currentLang]['form.submit'] || 'Send My Enquiry';
-    btn.style.background = '';
-    btn.disabled = false;
-    e.target.reset();
-  }, 3500);
+/* ─── Booking wizard ─── */
+const bookingForm = document.getElementById('bookingForm');
+
+// chip-opt visual state sync
+document.querySelectorAll('.chip-opt input').forEach(input => {
+  input.addEventListener('change', () => {
+    const chip = input.closest('.chip-opt');
+    if (input.type === 'radio') {
+      document.querySelectorAll(`.chip-opt input[name="${input.name}"]`).forEach(i =>
+        i.closest('.chip-opt').classList.toggle('selected', i.checked));
+    } else {
+      chip.classList.toggle('selected', input.checked);
+    }
+  });
+});
+
+// step nav
+function gotoStep(target) {
+  document.querySelectorAll('.wizard__step').forEach(s => s.classList.remove('active'));
+  document.querySelector(`.wizard__step[data-step="${target}"]`).classList.add('active');
+  const bars = document.querySelectorAll('.wizard__progress span');
+  bars.forEach((b, i) => {
+    b.classList.remove('active', 'done');
+    if (i + 1 < target) b.classList.add('done');
+    else if (i + 1 === target) b.classList.add('active');
+  });
+  document.getElementById('contact').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
+
+document.querySelectorAll('[data-go]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const target = parseInt(btn.dataset.go, 10);
+    if (target > 1 && !validateStep(target - 1)) return;
+    gotoStep(target);
+  });
+});
+
+function validateStep(n) {
+  // hide errors
+  document.querySelectorAll('.field-error').forEach(e => e.classList.remove('show'));
+  if (n === 1) {
+    const ev = bookingForm.querySelector('input[name="event_type"]:checked');
+    if (!ev) { document.getElementById('err-event-type').classList.add('show'); return false; }
+    const services = bookingForm.querySelectorAll('input[name="services"]:checked');
+    if (services.length === 0) { document.getElementById('err-services').classList.add('show'); return false; }
+  }
+  return true;
+}
+
+function showToast(msg, isError) {
+  let t = document.getElementById('toast');
+  if (!t) {
+    t = document.createElement('div');
+    t.id = 'toast';
+    t.className = 'toast';
+    document.body.appendChild(t);
+  }
+  t.className = 'toast' + (isError ? ' error' : '');
+  t.innerHTML = `<i class="fa-solid ${isError ? 'fa-circle-exclamation' : 'fa-circle-check'}"></i><span>${msg}</span>`;
+  requestAnimationFrame(() => t.classList.add('show'));
+  setTimeout(() => t.classList.remove('show'), 5000);
+}
+
+bookingForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  if (!validateStep(1)) { gotoStep(1); return; }
+  const btn = bookingForm.querySelector('button[type=submit]');
+  btn.disabled = true;
+  const original = btn.innerHTML;
+  btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> <span>Duke dërguar…</span>';
+
+  const fd = new FormData(bookingForm);
+  const services = fd.getAll('services');
+  const payload = Object.fromEntries(fd.entries());
+  payload.services = services;
+  delete payload.services; // ensure array form below
+  payload.services = services;
+
+  try {
+    const r = await fetch('/api/bookings', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    if (!r.ok) throw new Error('server');
+    showToast('Faleminderit! Kërkesa juaj u dërgua. Do t\'ju kontaktojmë së shpejti.');
+    bookingForm.reset();
+    document.querySelectorAll('.chip-opt.selected').forEach(c => c.classList.remove('selected'));
+    gotoStep(1);
+  } catch (err) {
+    showToast('Diçka shkoi keq. Ju lutem provoni përsëri ose na kontaktoni në WhatsApp.', true);
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = original;
+  }
+});
+
+/* ─── Public Gallery (loads from /api/gallery) ─── */
+const FALLBACK_GALLERY = [
+  { image_url: 'https://images.unsplash.com/photo-1519741497674-611481863552?w=800&q=80', title: 'Wedding Décor', category: 'wedding' },
+  { image_url: 'https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=600&q=80', title: 'Balloon Décor', category: 'helium' },
+  { image_url: 'https://images.unsplash.com/photo-1464349153735-7db50ed83c84?w=600&q=80', title: 'Balloon Arch', category: 'balloon-arch' },
+  { image_url: 'https://images.unsplash.com/photo-1602173574767-37ac01994b2a?w=600&q=80', title: 'Corporate Gifts', category: 'corporate' },
+  { image_url: 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=800&q=80', title: 'Party Setup', category: 'birthday' },
+  { image_url: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80', title: 'Gift Hampers', category: 'corporate' }
+];
+
+function escapeAttr(s) { return String(s||'').replace(/[&<>"']/g, c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+async function loadGallery() {
+  const grid = document.getElementById('galleryGrid');
+  let items;
+  try {
+    const r = await fetch('/api/gallery');
+    items = r.ok ? await r.json() : [];
+  } catch (e) { items = []; }
+  if (items.length === 0) items = FALLBACK_GALLERY;
+  grid.innerHTML = items.map((g, i) => `
+    <div class="gal-item reveal" data-d="${(i % 3) + 1}">
+      <img class="gal-img" src="${escapeAttr(g.image_url)}" alt="${escapeAttr(g.title)}" loading="lazy" />
+      <div class="gal-item__overlay"><i class="fa-solid fa-expand"></i><span>${escapeAttr(g.title)}</span></div>
+    </div>
+  `).join('');
+  grid.querySelectorAll('.reveal').forEach(el => revObs.observe(el));
+}
+loadGallery();
 </script>
 
 </body>

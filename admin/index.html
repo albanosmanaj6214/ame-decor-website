@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AME Decor — Admin Panel</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+<style>
+:root{
+  --green:#2C5548; --green-deep:#1E3D30; --green-dark:#162D24;
+  --green-mid:#3A6B58; --green-soft:#4A8070; --green-pale:#EAF2EF; --green-wash:#F2F7F5;
+  --gold:#C9A84C; --gold-light:#E2C87A; --gold-pale:#FBF6E9; --gold-dark:#A8883A;
+  --white:#FFFFFF; --cream:#FAF8F4; --off-white:#F5F2EC;
+  --warm-gray:#7A8880; --dark:#162D24; --text:#2C3A35;
+  --serif:'Playfair Display',serif; --sans:'Montserrat',sans-serif;
+  --shadow-sm:0 2px 12px rgba(22,45,36,.08);
+  --shadow-md:0 8px 32px rgba(22,45,36,.14);
+  --r4:4px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--sans);background:var(--cream);color:var(--text);min-height:100vh}
+a{color:var(--green);text-decoration:none}
+button{font-family:var(--sans);cursor:pointer;border:none}
+
+/* ── login ── */
+.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1.5rem;background:linear-gradient(135deg,var(--green) 0%,var(--green-dark) 100%)}
+.login-card{background:var(--white);border-radius:var(--r4);box-shadow:var(--shadow-md);padding:2.5rem;width:100%;max-width:420px}
+.login-logo{text-align:center;margin-bottom:2rem}
+.login-logo h1{font-family:var(--serif);color:var(--green);font-size:2rem;letter-spacing:8px}
+.login-logo p{color:var(--warm-gray);font-size:.7rem;letter-spacing:4px;text-transform:uppercase;margin-top:.3rem}
+.field{margin-bottom:1.2rem}
+.field label{display:block;font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--green-mid);margin-bottom:.4rem;font-weight:600}
+.field input,.field select,.field textarea{width:100%;padding:.85rem 1rem;border:1px solid var(--green-pale);border-radius:var(--r4);font-family:var(--sans);font-size:.95rem;background:var(--cream);color:var(--text);transition:border-color .2s}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--green);background:var(--white)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;padding:.9rem 1.6rem;background:var(--green);color:var(--white);border-radius:var(--r4);font-weight:600;font-size:.85rem;letter-spacing:.06em;text-transform:uppercase;transition:background .2s}
+.btn:hover{background:var(--green-deep)}
+.btn--gold{background:var(--gold);color:var(--green-dark)}
+.btn--gold:hover{background:var(--gold-dark);color:var(--white)}
+.btn--ghost{background:transparent;color:var(--green);border:1px solid var(--green-pale)}
+.btn--ghost:hover{background:var(--green-pale)}
+.btn--danger{background:#b54a3a;color:var(--white)}
+.btn--danger:hover{background:#8f3a2d}
+.btn--sm{padding:.45rem .85rem;font-size:.7rem}
+.btn--full{width:100%}
+.error{color:#b54a3a;font-size:.85rem;margin-top:.6rem;display:none}
+.error.show{display:block}
+
+/* ── shell ── */
+.app{display:none;min-height:100vh;background:var(--cream)}
+.app.show{display:block}
+.topbar{background:var(--green-dark);color:var(--white);padding:1rem 1.5rem;display:flex;align-items:center;justify-content:space-between;box-shadow:var(--shadow-sm)}
+.topbar h1{font-family:var(--serif);font-weight:400;letter-spacing:6px;font-size:1.3rem}
+.topbar .who{font-size:.8rem;opacity:.85;margin-right:1rem}
+.topbar .btn--ghost{color:var(--white);border-color:rgba(255,255,255,.25)}
+.topbar .btn--ghost:hover{background:rgba(255,255,255,.1)}
+
+.tabs{display:flex;background:var(--white);border-bottom:1px solid var(--green-pale);overflow-x:auto}
+.tab{padding:1rem 1.6rem;font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;color:var(--warm-gray);font-weight:600;border-bottom:3px solid transparent;background:transparent;white-space:nowrap}
+.tab.active{color:var(--green);border-bottom-color:var(--gold)}
+
+.panel{padding:2rem 1.5rem;max-width:1280px;margin:0 auto;display:none}
+.panel.active{display:block}
+.panel-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem}
+.panel-head h2{font-family:var(--serif);color:var(--green-dark);font-weight:700;font-size:1.6rem}
+
+/* ── stats ── */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;margin-bottom:2rem}
+.stat-card{background:var(--white);border-radius:var(--r4);padding:1.2rem 1.4rem;box-shadow:var(--shadow-sm);border-left:3px solid var(--gold)}
+.stat-card .lbl{font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--warm-gray);margin-bottom:.4rem}
+.stat-card .val{font-size:1.8rem;font-weight:700;color:var(--green-dark);font-family:var(--serif)}
+
+/* ── filter pills ── */
+.filters{display:flex;gap:.5rem;margin-bottom:1.2rem;flex-wrap:wrap}
+.pill{padding:.45rem 1rem;border-radius:999px;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;font-weight:600;background:var(--white);color:var(--warm-gray);border:1px solid var(--green-pale);cursor:pointer}
+.pill.active{background:var(--green);color:var(--white);border-color:var(--green)}
+
+/* ── booking list ── */
+.bookings-list{display:flex;flex-direction:column;gap:.8rem}
+.booking-row{background:var(--white);border-radius:var(--r4);padding:1rem 1.2rem;box-shadow:var(--shadow-sm);display:grid;grid-template-columns:auto 1fr auto auto;gap:1rem;align-items:center;cursor:pointer;transition:transform .15s,box-shadow .15s}
+.booking-row:hover{transform:translateY(-1px);box-shadow:var(--shadow-md)}
+.booking-row .avatar{width:42px;height:42px;border-radius:50%;background:var(--green-pale);color:var(--green);display:grid;place-items:center;font-weight:700}
+.booking-row .info .name{font-weight:600;color:var(--green-dark);margin-bottom:.15rem}
+.booking-row .info .meta{font-size:.78rem;color:var(--warm-gray)}
+.booking-row .when{font-size:.78rem;color:var(--warm-gray);text-align:right}
+.status-badge{font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;font-weight:700;padding:.3rem .65rem;border-radius:999px}
+.status-new{background:#fff3e3;color:#a8723a}
+.status-confirmed{background:var(--green-pale);color:var(--green-deep)}
+.status-completed{background:#e6e9e7;color:var(--warm-gray)}
+.status-cancelled{background:#fde6e1;color:#9c4434}
+.empty{text-align:center;padding:3rem 1rem;color:var(--warm-gray)}
+
+/* ── modal ── */
+.modal-bg{position:fixed;inset:0;background:rgba(22,45,36,.55);display:none;align-items:flex-start;justify-content:center;padding:2rem 1rem;z-index:100;overflow-y:auto}
+.modal-bg.show{display:flex}
+.modal{background:var(--white);border-radius:var(--r4);box-shadow:var(--shadow-md);width:100%;max-width:680px;padding:2rem;position:relative}
+.modal h3{font-family:var(--serif);color:var(--green-dark);margin-bottom:1.2rem;font-size:1.4rem}
+.modal .close-x{position:absolute;top:1rem;right:1rem;background:transparent;color:var(--warm-gray);font-size:1.4rem;width:36px;height:36px;border-radius:50%}
+.modal .close-x:hover{background:var(--green-pale);color:var(--green-dark)}
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem}
+.detail-grid .full{grid-column:1/-1}
+.detail{background:var(--cream);padding:.85rem 1rem;border-radius:var(--r4);border:1px solid var(--green-pale)}
+.detail .lbl{font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;color:var(--warm-gray);font-weight:600;margin-bottom:.25rem}
+.detail .val{color:var(--text);font-weight:500;word-break:break-word}
+.chip-row{display:flex;flex-wrap:wrap;gap:.4rem}
+.chip{background:var(--gold-pale);color:var(--gold-dark);padding:.25rem .65rem;border-radius:999px;font-size:.72rem;font-weight:600}
+.modal-actions{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:1rem}
+
+/* ── gallery panel ── */
+.gallery-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1rem}
+.gal-card{background:var(--white);border-radius:var(--r4);overflow:hidden;box-shadow:var(--shadow-sm);display:flex;flex-direction:column}
+.gal-card img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block}
+.gal-card .body{padding:.85rem 1rem;flex:1;display:flex;flex-direction:column;gap:.4rem}
+.gal-card .title{font-weight:600;color:var(--green-dark);font-size:.95rem}
+.gal-card .cat{font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;color:var(--gold-dark)}
+.gal-card .actions{display:flex;gap:.4rem;margin-top:auto;padding-top:.5rem}
+
+.upload-form{background:var(--white);border-radius:var(--r4);padding:1.4rem;box-shadow:var(--shadow-sm);margin-bottom:2rem}
+.upload-form .row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+
+@media(max-width:720px){
+  .booking-row{grid-template-columns:auto 1fr;gap:.7rem}
+  .booking-row .when,.booking-row .status-badge{grid-column:2;justify-self:start}
+  .detail-grid{grid-template-columns:1fr}
+  .upload-form .row{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- ─────── LOGIN ─────── -->
+<div class="login-wrap" id="loginWrap">
+  <form class="login-card" id="loginForm">
+    <div class="login-logo">
+      <h1>AME</h1>
+      <p>Decor &amp; More — Admin</p>
+    </div>
+    <div class="field">
+      <label>Përdoruesi</label>
+      <input type="text" id="loginUser" autocomplete="username" required value="admin" />
+    </div>
+    <div class="field">
+      <label>Fjalëkalimi</label>
+      <input type="password" id="loginPass" autocomplete="current-password" required />
+    </div>
+    <button type="submit" class="btn btn--full">Hyr</button>
+    <div class="error" id="loginErr">Kredencialet janë të pasakta.</div>
+  </form>
+</div>
+
+<!-- ─────── APP ─────── -->
+<div class="app" id="app">
+  <header class="topbar">
+    <h1>AME ADMIN</h1>
+    <div style="display:flex;align-items:center">
+      <span class="who" id="whoami"></span>
+      <button class="btn btn--ghost btn--sm" id="changePassBtn">Ndrysho fjalëkalimin</button>
+      <button class="btn btn--ghost btn--sm" id="logoutBtn" style="margin-left:.5rem"><i class="fa-solid fa-sign-out-alt"></i> Dil</button>
+    </div>
+  </header>
+
+  <nav class="tabs">
+    <button class="tab active" data-tab="bookings"><i class="fa-solid fa-calendar-check"></i> Rezervimet</button>
+    <button class="tab" data-tab="gallery"><i class="fa-solid fa-images"></i> Galeria</button>
+  </nav>
+
+  <!-- ── BOOKINGS PANEL ── -->
+  <section class="panel active" id="panel-bookings">
+    <div class="panel-head">
+      <h2>Rezervimet</h2>
+      <button class="btn btn--ghost btn--sm" id="refreshBookings"><i class="fa-solid fa-rotate"></i> Rifresko</button>
+    </div>
+    <div class="stats" id="stats"></div>
+    <div class="filters" id="filters">
+      <button class="pill active" data-status="all">Të gjitha</button>
+      <button class="pill" data-status="new">Të reja</button>
+      <button class="pill" data-status="confirmed">Të konfirmuara</button>
+      <button class="pill" data-status="completed">Të përfunduara</button>
+      <button class="pill" data-status="cancelled">Të anuluara</button>
+    </div>
+    <div class="bookings-list" id="bookingsList"></div>
+  </section>
+
+  <!-- ── GALLERY PANEL ── -->
+  <section class="panel" id="panel-gallery">
+    <div class="panel-head">
+      <h2>Galeria e Punimeve</h2>
+    </div>
+    <form class="upload-form" id="uploadForm" enctype="multipart/form-data">
+      <h3 style="font-family:var(--serif);color:var(--green-dark);margin-bottom:1rem;font-weight:700">Shto Foto të Re</h3>
+      <div class="row">
+        <div class="field">
+          <label>Titulli *</label>
+          <input type="text" name="title" required placeholder="psh. Dasma e Anës dhe Ardit-it" />
+        </div>
+        <div class="field">
+          <label>Kategoria</label>
+          <select name="category">
+            <option value="">— Zgjedh —</option>
+            <option value="wedding">Dasmë</option>
+            <option value="engagement">Fejesë</option>
+            <option value="birthday">Ditëlindje</option>
+            <option value="anniversary">Përvjetor</option>
+            <option value="balloon-arch">Baloon Arch</option>
+            <option value="helium">Helium Balloons</option>
+            <option value="corporate">Korporativ</option>
+            <option value="other">Tjetër</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label>Përshkrimi</label>
+        <textarea name="description" rows="2" placeholder="Përshkrim i shkurtër (opsional)"></textarea>
+      </div>
+      <div class="row">
+        <div class="field">
+          <label>Foto * (max 8MB)</label>
+          <input type="file" name="image" accept="image/*" required />
+        </div>
+        <div class="field">
+          <label>Renditja (numër më i madh = në fillim)</label>
+          <input type="number" name="display_order" value="0" />
+        </div>
+      </div>
+      <button type="submit" class="btn"><i class="fa-solid fa-cloud-arrow-up"></i> Ngarko</button>
+      <div class="error" id="uploadErr"></div>
+    </form>
+    <div class="gallery-grid" id="galleryGrid"></div>
+  </section>
+</div>
+
+<!-- ── Booking detail modal ── -->
+<div class="modal-bg" id="bookingModal">
+  <div class="modal">
+    <button class="close-x" id="closeBooking">&times;</button>
+    <h3 id="modalTitle">Detajet e Rezervimit</h3>
+    <div id="modalBody"></div>
+  </div>
+</div>
+
+<!-- ── Change password modal ── -->
+<div class="modal-bg" id="passModal">
+  <div class="modal" style="max-width:440px">
+    <button class="close-x" onclick="document.getElementById('passModal').classList.remove('show')">&times;</button>
+    <h3>Ndrysho Fjalëkalimin</h3>
+    <form id="passForm">
+      <div class="field"><label>Fjalëkalimi aktual</label><input type="password" id="curPass" required /></div>
+      <div class="field"><label>Fjalëkalimi i ri (min 6 karaktere)</label><input type="password" id="newPass" minlength="6" required /></div>
+      <button type="submit" class="btn btn--full">Ruaj</button>
+      <div class="error" id="passErr"></div>
+    </form>
+  </div>
+</div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const api = (path, opts={}) => fetch('/api'+path, { credentials:'same-origin', headers: opts.body && !(opts.body instanceof FormData) ? {'Content-Type':'application/json'} : undefined, ...opts });
+
+const STATUS_LABEL = { new:'I ri', confirmed:'I konfirmuar', completed:'I përfunduar', cancelled:'I anuluar' };
+const EVENT_LABEL = { wedding:'Dasmë', engagement:'Fejesë', birthday:'Ditëlindje', anniversary:'Përvjetor', corporate:'Korporativ', other:'Tjetër' };
+const SERVICE_LABEL = {
+  'balloon-arch':'Baloon Arch','helium-balloons':'Balona me Helium','table-decor':'Dekor tavoline',
+  'plates-glasses':'Set pjata-gota','centerpieces':'Centerpieces','flower-arrangements':'Aranzhime me lule',
+  'backdrop':'Backdrop / Sfond','candy-bar':'Candy Bar','cake-stand':'Mbajtëse torte',
+  'gifts':'Dhuratat / Bombonjeret','custom':'Dizajn me porosi'
+};
+
+let currentFilter = 'all';
+
+/* ───── Auth ───── */
+async function checkAuth(){
+  const r = await api('/admin/me');
+  if (r.ok) {
+    const j = await r.json();
+    $('whoami').textContent = j.username;
+    $('loginWrap').style.display = 'none';
+    $('app').classList.add('show');
+    loadBookings();
+    loadStats();
+  } else {
+    $('loginWrap').style.display = 'flex';
+    $('app').classList.remove('show');
+  }
+}
+$('loginForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  $('loginErr').classList.remove('show');
+  const r = await api('/admin/login', { method:'POST', body: JSON.stringify({ username:$('loginUser').value, password:$('loginPass').value }) });
+  if (r.ok) checkAuth();
+  else $('loginErr').classList.add('show');
+});
+$('logoutBtn').addEventListener('click', async () => {
+  await api('/admin/logout', { method:'POST' });
+  checkAuth();
+});
+
+/* ───── Tabs ───── */
+document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => {
+  document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(x => x.classList.remove('active'));
+  t.classList.add('active');
+  $('panel-'+t.dataset.tab).classList.add('active');
+  if (t.dataset.tab === 'gallery') loadAdminGallery();
+}));
+
+/* ───── Bookings ───── */
+async function loadStats(){
+  const r = await api('/admin/stats');
+  if (!r.ok) return;
+  const s = await r.json();
+  const byStatus = Object.fromEntries(s.by_status.map(x => [x.status, x.n]));
+  $('stats').innerHTML = `
+    <div class="stat-card"><div class="lbl">Total</div><div class="val">${s.total}</div></div>
+    <div class="stat-card"><div class="lbl">30 ditë</div><div class="val">${s.recent_30_days}</div></div>
+    <div class="stat-card"><div class="lbl">Të reja</div><div class="val">${byStatus.new||0}</div></div>
+    <div class="stat-card"><div class="lbl">Të konfirmuara</div><div class="val">${byStatus.confirmed||0}</div></div>
+  `;
+}
+async function loadBookings(){
+  const r = await api('/admin/bookings' + (currentFilter==='all' ? '' : '?status='+currentFilter));
+  if (!r.ok) return;
+  const list = await r.json();
+  if (list.length === 0){
+    $('bookingsList').innerHTML = '<div class="empty">Asnjë rezervim ende.</div>';
+    return;
+  }
+  $('bookingsList').innerHTML = list.map(b => {
+    const ev = EVENT_LABEL[b.event_type] || b.event_type;
+    const initials = (b.customer_name||'?').trim().split(/\s+/).map(p=>p[0]).slice(0,2).join('').toUpperCase();
+    const when = new Date(b.created_at + 'Z').toLocaleString('sq-AL', { dateStyle:'short', timeStyle:'short' });
+    const evDate = b.event_date ? `<span style="color:var(--gold-dark)">${b.event_date}</span> · ` : '';
+    return `<div class="booking-row" data-id="${b.id}">
+      <div class="avatar">${initials || '?'}</div>
+      <div class="info">
+        <div class="name">${escapeHtml(b.customer_name)} <span style="color:var(--warm-gray);font-weight:400">· ${escapeHtml(b.customer_phone)}</span></div>
+        <div class="meta">${evDate}${ev} · ${b.services.length} shërbime</div>
+      </div>
+      <div class="when">${when}</div>
+      <span class="status-badge status-${b.status}">${STATUS_LABEL[b.status]||b.status}</span>
+    </div>`;
+  }).join('');
+  document.querySelectorAll('.booking-row').forEach(row => {
+    row.addEventListener('click', () => openBooking(row.dataset.id));
+  });
+}
+$('refreshBookings').addEventListener('click', () => { loadBookings(); loadStats(); });
+document.querySelectorAll('#filters .pill').forEach(p => p.addEventListener('click', () => {
+  document.querySelectorAll('#filters .pill').forEach(x => x.classList.remove('active'));
+  p.classList.add('active');
+  currentFilter = p.dataset.status;
+  loadBookings();
+}));
+
+async function openBooking(id){
+  const r = await api('/admin/bookings/'+id);
+  if (!r.ok) return;
+  const b = await r.json();
+  const services = b.services.map(s => `<span class="chip">${SERVICE_LABEL[s]||s}</span>`).join('');
+  const time = [b.event_time_start, b.event_time_end].filter(Boolean).join(' – ') || '—';
+  $('modalBody').innerHTML = `
+    <div class="detail-grid">
+      <div class="detail"><div class="lbl">Klienti</div><div class="val">${escapeHtml(b.customer_name)}</div></div>
+      <div class="detail"><div class="lbl">Telefoni</div><div class="val"><a href="tel:${b.customer_phone}">${escapeHtml(b.customer_phone)}</a> · <a href="https://wa.me/${b.customer_phone.replace(/[^0-9]/g,'')}" target="_blank">WhatsApp</a></div></div>
+      <div class="detail"><div class="lbl">Email</div><div class="val">${b.customer_email ? '<a href="mailto:'+b.customer_email+'">'+escapeHtml(b.customer_email)+'</a>' : '—'}</div></div>
+      <div class="detail"><div class="lbl">Tipi i eventit</div><div class="val">${EVENT_LABEL[b.event_type]||b.event_type}</div></div>
+      <div class="detail"><div class="lbl">Data</div><div class="val">${b.event_date||'—'}</div></div>
+      <div class="detail"><div class="lbl">Ora</div><div class="val">${time}</div></div>
+      <div class="detail"><div class="lbl">Lokacioni</div><div class="val">${escapeHtml(b.location_address||'—')}${b.location_city ? ', '+escapeHtml(b.location_city) : ''}</div></div>
+      <div class="detail"><div class="lbl">Tipi i ambientit</div><div class="val">${b.indoor_outdoor==='indoor'?'Mbrenda':b.indoor_outdoor==='outdoor'?'Jashtë':'—'} · ${b.venue_type||'—'}</div></div>
+      <div class="detail"><div class="lbl">Numri i të ftuarve</div><div class="val">${b.guest_count||'—'}</div></div>
+      <div class="detail"><div class="lbl">Buxheti</div><div class="val">${b.budget_range||'—'}</div></div>
+      <div class="detail full"><div class="lbl">Shërbimet</div><div class="val"><div class="chip-row">${services}</div></div></div>
+      ${b.notes ? `<div class="detail full"><div class="lbl">Shënimet e klientit</div><div class="val">${escapeHtml(b.notes)}</div></div>` : ''}
+    </div>
+    <div class="field"><label>Statusi</label>
+      <select id="modalStatus">
+        <option value="new" ${b.status==='new'?'selected':''}>I ri</option>
+        <option value="confirmed" ${b.status==='confirmed'?'selected':''}>I konfirmuar</option>
+        <option value="completed" ${b.status==='completed'?'selected':''}>I përfunduar</option>
+        <option value="cancelled" ${b.status==='cancelled'?'selected':''}>I anuluar</option>
+      </select>
+    </div>
+    <div class="field"><label>Çmimi i ofruar (€)</label><input type="number" step="0.01" id="modalPrice" value="${b.quoted_price||''}" /></div>
+    <div class="field"><label>Shënime të brendshme</label><textarea id="modalNotes" rows="3">${escapeHtml(b.admin_notes||'')}</textarea></div>
+    <div class="modal-actions">
+      <button class="btn" id="saveBookingBtn"><i class="fa-solid fa-floppy-disk"></i> Ruaj</button>
+      <button class="btn btn--danger btn--sm" id="deleteBookingBtn" data-id="${b.id}"><i class="fa-solid fa-trash"></i> Fshij</button>
+    </div>
+  `;
+  $('bookingModal').classList.add('show');
+  $('saveBookingBtn').addEventListener('click', async () => {
+    await api('/admin/bookings/'+id, { method:'PATCH', body: JSON.stringify({
+      status: $('modalStatus').value,
+      quoted_price: $('modalPrice').value ? Number($('modalPrice').value) : null,
+      admin_notes: $('modalNotes').value
+    })});
+    $('bookingModal').classList.remove('show');
+    loadBookings(); loadStats();
+  });
+  $('deleteBookingBtn').addEventListener('click', async () => {
+    if (!confirm('Të fshihet ky rezervim?')) return;
+    await api('/admin/bookings/'+id, { method:'DELETE' });
+    $('bookingModal').classList.remove('show');
+    loadBookings(); loadStats();
+  });
+}
+$('closeBooking').addEventListener('click', () => $('bookingModal').classList.remove('show'));
+$('bookingModal').addEventListener('click', (e) => { if (e.target === $('bookingModal')) $('bookingModal').classList.remove('show'); });
+
+/* ───── Gallery ───── */
+async function loadAdminGallery(){
+  const r = await api('/admin/gallery');
+  if (!r.ok) return;
+  const items = await r.json();
+  if (items.length === 0){
+    $('galleryGrid').innerHTML = '<div class="empty">Asnjë foto ende. Ngarko të parën më sipër.</div>';
+    return;
+  }
+  $('galleryGrid').innerHTML = items.map(g => `
+    <div class="gal-card">
+      <img src="${g.image_url}" alt="${escapeHtml(g.title)}" />
+      <div class="body">
+        <div class="title">${escapeHtml(g.title)}</div>
+        ${g.category ? `<div class="cat">${g.category}</div>` : ''}
+        <div class="actions">
+          <button class="btn btn--sm btn--ghost" onclick="togglePublish(${g.id}, ${g.published?0:1})">${g.published?'Fshih':'Publiko'}</button>
+          <button class="btn btn--sm btn--danger" onclick="deleteGallery(${g.id})"><i class="fa-solid fa-trash"></i></button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+$('uploadForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  $('uploadErr').classList.remove('show');
+  const fd = new FormData(e.target);
+  const r = await api('/admin/gallery', { method:'POST', body: fd });
+  if (r.ok) { e.target.reset(); loadAdminGallery(); }
+  else { const j = await r.json().catch(()=>({})); $('uploadErr').textContent = j.error || 'Gabim në ngarkim'; $('uploadErr').classList.add('show'); }
+});
+async function togglePublish(id, published){
+  await api('/admin/gallery/'+id, { method:'PATCH', body: JSON.stringify({ published }) });
+  loadAdminGallery();
+}
+async function deleteGallery(id){
+  if (!confirm('Të fshihet kjo foto?')) return;
+  await api('/admin/gallery/'+id, { method:'DELETE' });
+  loadAdminGallery();
+}
+
+/* ───── Change password ───── */
+$('changePassBtn').addEventListener('click', () => $('passModal').classList.add('show'));
+$('passForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  $('passErr').classList.remove('show');
+  const r = await api('/admin/change-password', { method:'POST', body: JSON.stringify({ current_password:$('curPass').value, new_password:$('newPass').value }) });
+  if (r.ok) { alert('Fjalëkalimi u ndryshua.'); $('passModal').classList.remove('show'); $('passForm').reset(); }
+  else { const j = await r.json().catch(()=>({})); $('passErr').textContent = j.error==='invalid_current_password' ? 'Fjalëkalimi aktual është i pasaktë.' : 'Gabim'; $('passErr').classList.add('show'); }
+});
+
+function escapeHtml(s){ if (s==null) return ''; return String(s).replace(/[&<>"']/g, c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+checkAuth();
+</script>
+</body>
+</html>
